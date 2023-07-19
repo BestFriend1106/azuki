@@ -94,6 +94,7 @@ export default function Home() {
       setXsHidden('hidden')
       setShowChallengeModal(true)
       setRemainTimes(4-response.data.remainTimes)
+      setNavBarIconShow('')
       setWinStatus('')
     }
     
@@ -294,7 +295,7 @@ export default function Home() {
           <li className="md:hidden mx-[15px]">
             <div className='inline-flex relative items-center w-full text-white font-sans font-bold text-[28px] border-b border-spacing-3  py-2  border-solid border-gray-500'> 
               <button onClick={() => {
-                  setShowModal(true),setXsHidden('hidden');
+                  setShowModal(true),setXsHidden('hidden'),setNavBarIconShow('')
                 }}>
                   Studio
               </button> 
@@ -304,7 +305,7 @@ export default function Home() {
           <li className="md:hidden mx-[15px]">
             <div className='inline-flex relative items-center w-full text-white font-sans font-bold text-[28px] border-b border-spacing-3  py-2  border-solid border-gray-500'> 
               <button onClick={() => {
-                  setShowModal(true),setXsHidden('hidden');
+                  setShowModal(true),setXsHidden('hidden'),setNavBarIconShow('')
                 }}>
                   Cinema
               </button> 
@@ -314,7 +315,7 @@ export default function Home() {
           <li className="md:hidden mx-[15px]">
             <div className='inline-flex relative items-center w-full text-white font-sans font-bold text-[28px] border-b border-spacing-3  py-2  border-solid border-gray-500'> 
               <button onClick={() => {
-                  setShowModal(true),setXsHidden('hidden');
+                  setShowModal(true),setXsHidden('hidden'),setNavBarIconShow('')
                 }}>
                   Discord
               </button>
@@ -325,7 +326,7 @@ export default function Home() {
           <li className="md:hidden mx-[15px]">
             <div className='inline-flex relative items-center w-full text-white font-sans font-bold text-[28px] border-b border-spacing-3  py-2  border-solid border-gray-500'> 
               <button onClick={() => {
-                  setShowModal(true),setXsHidden('hidden');
+                  setShowModal(true),setXsHidden('hidden'),setNavBarIconShow('')
                 }}>
                   Twitter 
               </button>
