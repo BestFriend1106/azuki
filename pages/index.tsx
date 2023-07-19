@@ -61,13 +61,27 @@ export default function Home() {
     else return 3; //probability 0.6
   }
   const fetchData = async () => {
+
     try {
       const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
         data: {
           walletAddress: publicKey.toBase58()
         },
       })
+      console.log("--------------->", response.data)
       setRemainTimes(4-response.data.remainTimes)
+      setWinPossible(response.data.winPossible)
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const fetchData1 = async () => {
+    try {
+      const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
+        data: {
+          walletAddress: publicKey.toBase58()
+        },
+      })
       setWinPossible(response.data.winPossible)
     } catch (error) {
       console.error(error);
@@ -140,7 +154,7 @@ export default function Home() {
         winStatus: winValue
       },
     })
-    fetchData()
+    fetchData1()
     // axios.post('https://climb-server.onrender.com/api/spots', {
     //   data: {
     //     walletAddress: publicKey.toBase58(),
