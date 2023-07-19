@@ -68,7 +68,6 @@ export default function Home() {
           walletAddress: publicKey.toBase58()
         },
       })
-      console.log("--------------->", response.data)
       setRemainTimes(4-response.data.remainTimes)
       setWinPossible(response.data.winPossible)
     } catch (error) {
