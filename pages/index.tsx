@@ -46,10 +46,33 @@ export default function Home() {
   const [showCongratulationModal, setShowCongratulationModal] = useState<boolean>(false)
   const [showLooseModal, setShowLooseModal] = useState<boolean>(false)
   const [winValue, setWinValue] = useState<number>(1)
-  
-  
+  const [winPossible, setWinPossible] = useState<string>('possible')
+  const [gray, setGray] = useState<string>('text-white')
 
-
+  function getRandom(){
+    var num=Math.random();
+    if(num < 0.05) return 1;  //probability 0.1
+    else if(num < 0.35) return 2; // probability 0.3
+    else return 3; //probability 0.6
+  }
+  function getRandom1(){
+    var num=Math.random();
+    if(num < 0.4) return 2; // probability 0.3
+    else return 3; //probability 0.6
+  }
+  const fetchData = async () => {
+    try {
+      const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
+        data: {
+          walletAddress: publicKey.toBase58()
+        },
+      })
+      setRemainTimes(4-response.data.remainTimes)
+      setWinPossible(response.data.winPossible)
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleConnectWallet = (name) => {
     if(name === 'Phantom'){
@@ -85,21 +108,21 @@ export default function Home() {
       toast('Please connect wallet', { hideProgressBar: false, autoClose: 2000, type: 'error' })
     }
     else if(publicKey) {
-      const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
-        data: {
-          walletAddress: publicKey.toBase58()
-        },
-      })
+      // const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
+      //   data: {
+      //     walletAddress: publicKey.toBase58()
+      //   },
+      // })
       setShowModal(true)
       setXsHidden('hidden')
       setShowChallengeModal(true)
-      setRemainTimes(4-response.data.remainTimes)
       setNavBarIconShow('')
       setWinStatus('')
+      setGray('text-gray-400')
     }
     
   }
-  const endSpotRotate = () => {
+  const endSpotRotate = async() => {
     setPlayStatus(false)
     setVideoHidden("hidden")
     setSpinHidden("")
@@ -111,38 +134,58 @@ export default function Home() {
       setShowLooseModal(true)
       setShowChallengeModal(false)
     }
+    const response = await axios.post('https://climb-server.onrender.com/api/spots', {
+      data: {
+        walletAddress: publicKey.toBase58(),
+        winStatus: winValue
+      },
+    })
+    fetchData()
+    // axios.post('https://climb-server.onrender.com/api/spots', {
+    //   data: {
+    //     walletAddress: publicKey.toBase58(),
+    //     winStatus: winStatus
+    //   },
+    // })
   }
-
-
-
+  
   const videoHandler = async() => {
     if(playStatus === false){
       if(!publicKey) {
         toast('Please connect wallet', { hideProgressBar: false, autoClose: 2000, type: 'error' })
       }
       else if (publicKey){
-        const response = await axios.post('https://climb-server.onrender.com/api/spots', {
-          data: {
-            walletAddress: publicKey.toBase58()
-          },
-        })
-        if (response.data==="There are no more chances today"){
+        
+        if (remainTimes === 0){
           setVideoHidden("hidden")
           setSpinHidden("")
           setRemainTimes(0)
-          toast(response.data, { hideProgressBar: false, autoClose: 2000, type: 'error' })
+          toast("There are no more chances today" , { hideProgressBar: false, autoClose: 2000, type: 'error' })
         }
         else {
-          setRemainTimes(response.data.remainTimes-1)
-          setVideoHidden("")
-          setSpinHidden("hidden")
-          setWinValue(response.data.winStatus)
-          setWinStatus('/spot/'+response.data.winStatus+'.webm')
-          await videoRef.current.play();
+          if(winPossible === 'possible'){
+            setRemainTimes(remainTimes-1)
+            setVideoHidden("")
+            setSpinHidden("hidden")
+            const videoNum = getRandom()
+            setWinValue(videoNum)
+            setWinStatus('/spot/'+videoNum+'.webm')
+            await videoRef.current.play();
+          }
+          if(winPossible === 'impossible'){
+            setRemainTimes(remainTimes-1)
+            setVideoHidden("")
+            setSpinHidden("hidden")
+            const videoNum = getRandom1()
+            setWinValue(videoNum)
+            setWinStatus('/spot/'+videoNum+'.webm')
+            await videoRef.current.play();
+          }
         }
       }
-  }
+    }
   };
+  
   useEffect(() => {
     setConnectWalletName(localStorage.getItem('walletName'))
     if(!publicKey) {
@@ -168,6 +211,8 @@ export default function Home() {
         setNavWalletIcon('/Backpack.svg')
         setDropIcon('')
       } 
+      
+      fetchData()
     }
   }, [publicKey]);
 
@@ -210,7 +255,7 @@ export default function Home() {
       </div>
       <div className={`absolute hidden md:${tabsShow} w-[745px] h-[50px] z-1 top-[68px] right-16`}>
         <div className="flex items-center h-25 z-1 w-[380px] h-[50px] bg-black/50 rounded-[12px]  backdrop-blur-[4px] ">
-          <div className={`ml-[35px] text-white text-[16px] ${poppins.variable} font-sans`}>
+          <div className={`ml-[35px] ${gray}  text-[16px] ${poppins.variable} font-sans`}>
             <button
               onClick={() => handleOpenChallenge()}
             > 
@@ -343,7 +388,7 @@ export default function Home() {
             className="w-screen h-screen bg-black/80 backdrop-blur-[9px]  fixed inset-0 z-3 outline-none focus:outline-none pb-20"
           >
             <button 
-              className="mt-[63px] ml-[198px] bg-[#D679BC] absolute  h-12 rounded-[12px]"
+              className="mt-[63px] ml-[198px]  border border-[#D679BC] absolute  h-12 rounded-[12px]"
               onClick={() => {
                 setShowChallengeModal(false),setXsHidden('hidden'), setNavBarIconShow('')
               }}
