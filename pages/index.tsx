@@ -47,7 +47,11 @@ export default function Home() {
   const [showLooseModal, setShowLooseModal] = useState<boolean>(false)
   const [winValue, setWinValue] = useState<number>(1)
   const [winPossible, setWinPossible] = useState<string>('possible')
-  const [gray, setGray] = useState<string>('text-white')
+  const [gray1, setGray1] = useState<string>('text-white')
+  const [gray2, setGray2] = useState<string>('text-white')
+  const [gray3, setGray3] = useState<string>('text-white')
+
+
 
   function getRandom(){
     var num=Math.random();
@@ -131,7 +135,9 @@ export default function Home() {
       setShowChallengeModal(true)
       setNavBarIconShow('')
       setWinStatus('')
-      setGray('text-gray-400')
+      setGray1('text-gray-100 bg-[#929292]/40')
+      setGray2('text-white')
+      setGray3('text-white')
     }
     
   }
@@ -266,30 +272,35 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className={`absolute hidden md:${tabsShow} w-[745px] h-[50px] z-1 top-[68px] right-16`}>
-        <div className="flex items-center h-25 z-1 w-[380px] h-[50px] bg-black/50 rounded-[12px]  backdrop-blur-[4px] ">
-          <div className={`ml-[35px] ${gray}  text-[16px] ${poppins.variable} font-sans`}>
+      <div className={`absolute hidden md:${tabsShow} w-[700px] h-[50px] z-1 top-[68px] right-16`}>
+        <div className="grid grid-cols-3 items-center justify-center h-50 z-1 w-[350px] h-[50px] bg-black/50 rounded-[12px]  backdrop-blur-[4px] ">
+          <div className={`flex w-full h-full rounded-l-[12px] ${gray1} text-[16px] ${poppins.variable} font-sans`}>
             <button
+              className="m-auto"
               onClick={() => handleOpenChallenge()}
             > 
               Challenges 
             </button>
           </div>
-          <div className='flex w-[66px] h-[22.5px] ml-[40px] items-center text-white'>
-            <div className="inline-flex mt-[2px]  left-0">
-              <img className="w-[11px] h-[14.3px]" src='/key.svg'/>
+          <div className={`flex w-full h-full items-center ${gray2}`}>
+            <div className="m-auto">
+              <div className="inline-flex mt-[2px]  left-0">
+                <img className="w-[11px] h-[14.3px]" src='/key.svg'/>
+              </div>
+              <button onClick={() => {setGray2('text-gray-100 bg-[#929292]/40'),setGray1('text-white'),setGray3('text-white')} } className={`text-[16px] ml-[5px] ${poppins.variable} font-sans`}>
+                Studio
+              </button>
             </div>
-            <button className={`text-[16px] ml-[5px] ${poppins.variable} font-sans`}>
-              Studio
-            </button>
           </div>
-          <div className='flex w-[83px] h-[22.5px] ml-[45px] items-center text-white'>
-            <div className=" inline-flex mt-[2px] left-0">
-              <img className="w-[11px] h-[14.3px]" src='/key.svg'/>
+          <div className={`flex w-full h-full items-center rounded rounded-r-[12px] ${gray3}`}>
+            <div className="m-auto">
+              <div className=" inline-flex mt-[2px] left-0">
+                <img className="w-[11px] h-[14.3px]" src='/key.svg'/>
+              </div>
+              <button onClick={() => {setGray3('text-gray-100 bg-[#929292]/40'), setGray2('text-white'), setGray1('text-white')}} className={`text-[16px] ml-[5px] ${poppins.variable} font-sans`}>
+                Cinema
+              </button>
             </div>
-            <button className={`text-[16px] ml-[5px] ${poppins.variable} font-sans`}>
-              Cinema
-            </button>
           </div>
         </div>
         <div className="h-25 z-1 bg-black/50 rounded-[12px] p-2 px-3 backdrop-blur-[4px] inline-flex ml-5">
