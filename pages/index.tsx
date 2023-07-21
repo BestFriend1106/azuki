@@ -50,7 +50,7 @@ export default function Home() {
   const [gray1, setGray1] = useState<string>('text-white')
   const [gray2, setGray2] = useState<string>('text-white')
   const [gray3, setGray3] = useState<string>('text-white')
-
+  const [playAvail, setPlayAvail] = useState<string>('')
 
 
   function getRandom(){
@@ -64,8 +64,21 @@ export default function Home() {
     if(num < 0.4) return 2; // probability 0.3
     else return 3; //probability 0.6
   }
-  const fetchData = async () => {
+  // const fetchData = async () => {
 
+  //   try {
+  //     const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
+  //       data: {
+  //         walletAddress: publicKey.toBase58()
+  //       },
+  //     })
+  //     setRemainTimes(4-response.data.remainTimes)
+  //     setWinPossible(response.data.winPossible)
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  const fetchData = async () => {
     try {
       const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
         data: {
@@ -78,6 +91,31 @@ export default function Home() {
       console.error(error);
     }
   };
+  const playAvailable = async () => {
+    try {
+      const response = await axios.post('https://climb-server.onrender.com/api/wallet/getAvailable', {
+        data: {
+          walletAddress: publicKey.toBase58()
+        },
+      })
+      setPlayAvail(response.data)
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // const fetchData1 = async () => {
+  //   try {
+  //     const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
+  //       data: {
+  //         walletAddress: publicKey.toBase58()
+  //       },
+  //     })
+  //     setWinPossible(response.data.winPossible)
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
   const fetchData1 = async () => {
     try {
       const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
@@ -125,22 +163,44 @@ export default function Home() {
       toast('Please connect wallet', { hideProgressBar: false, autoClose: 2000, type: 'error' })
     }
     else if(publicKey) {
+      if(playAvail === "Your wallet does not exist in white list")
+      toast(playAvail, { hideProgressBar: false, autoClose: 2000, type: 'error' })
       // const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
       //   data: {
       //     walletAddress: publicKey.toBase58()
       //   },
       // })
-      setShowModal(true)
-      setXsHidden('hidden')
-      setShowChallengeModal(true)
-      setNavBarIconShow('')
-      setWinStatus('')
-      setGray1('text-gray-100 bg-[#929292]/40')
-      setGray2('text-white')
-      setGray3('text-white')
+      else {
+        setShowModal(true)
+        setXsHidden('hidden')
+        setShowChallengeModal(true)
+        setNavBarIconShow('')
+        setWinStatus('')
+        setGray1('text-gray-100 bg-[#929292]/40')
+        setGray2('text-white')
+        setGray3('text-white')
+      }
     }
     
   }
+  // const endSpotRotate = async() => {
+  //   setPlayStatus(false)
+  //   setVideoHidden("hidden")
+  //   setSpinHidden("")
+  //   if (winValue === 1){
+  //     setShowCongratulationModal(true)
+  //     setShowChallengeModal(false)
+  //   }
+  //   else if (winValue === 3){
+  //     setShowLooseModal(true)
+  //     setShowChallengeModal(false)
+  //   }
+  //   const response = await axios.post('https://climb-server.onrender.com/api/spots', {
+  //     data: {
+  //       walletAddress: publicKey.toBase58(),
+  //       winStatus: winValue
+  //     },
+  //   })
   const endSpotRotate = async() => {
     setPlayStatus(false)
     setVideoHidden("hidden")
@@ -159,13 +219,7 @@ export default function Home() {
         winStatus: winValue
       },
     })
-    fetchData1()
-    // axios.post('https://climb-server.onrender.com/api/spots', {
-    //   data: {
-    //     walletAddress: publicKey.toBase58(),
-    //     winStatus: winStatus
-    //   },
-    // })
+
   }
   
   const videoHandler = async() => {
@@ -232,6 +286,7 @@ export default function Home() {
       } 
       
       fetchData()
+      playAvailable()
     }
   }, [publicKey]);
 
