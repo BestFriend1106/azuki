@@ -43,8 +43,7 @@ function MyApp({ Component, pageProps }) {
     {loading ? <Loader /> : null}
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
-          <Component {...pageProps} />
-          
+          <Component {...pageProps} />   
         </WalletProvider>
       </ConnectionProvider>
     </>

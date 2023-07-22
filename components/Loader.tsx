@@ -2,8 +2,8 @@ import React from "react";
 
 const Loading: React.FC = () => {
   return (
-    <div className="absolute flex justify-content w-screen h-screen overflow-hidden my-auto bg-cyan-950 border-black z-50">
-        <img src='/loading.gif' className="m-auto mt-auto mb-auto flex align-middle w-200 h-150" />
+    <div className="absolute flex justify-center items-center w-screen h-screen overflow-hidden my-auto bg-black border-black z-50">
+      <video src="/loading.mp4" className="w-[300px]" autoPlay muted loop></video>
     </div>
   );
 };
