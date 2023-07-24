@@ -54,7 +54,6 @@ export default function Home() {
   const [remainTimes, setRemainTimes] = useState<number>(0);
   const [showCongratulationModal, setShowCongratulationModal] =
     useState<boolean>(false);
-  const [showLooseModal, setShowLooseModal] = useState<boolean>(false);
   const [winValue, setWinValue] = useState<number>(1);
   const [winPossible, setWinPossible] = useState<string>("possible");
   const [gray1, setGray1] = useState<string>("text-white");
@@ -63,8 +62,7 @@ export default function Home() {
   const [connectStatusText, setConnectStatusText] = useState<string>("");
   const [playAvail, setPlayAvail] = useState<string>("");
   const [desktopConnectButtonIcon, setDesktopConnectButtonIcon] = useState<string>("");
-  const [showErrorModal, setShowErrorModal] = useState<boolean>(false)
-  const [errorContext, setErrorContext] = useState<string>('')
+  const [showAddWallet, setShowAddWallet] = useState<boolean>(false)
 
   function getRandom() {
     var num = Math.random();
@@ -76,6 +74,18 @@ export default function Home() {
     var num = Math.random();
     if (num < 0.4) return 2; // probability 0.3
     else return 3; //probability 0.6
+  }
+  const remainTime = () => {
+    const now = new Date()
+    const nowHours = now.getUTCHours();
+    const nowMinutes = now.getUTCMinutes();
+    const nowSeconds = now.getUTCSeconds();
+    const difSeconds = 24*3600 - nowHours*3600 - nowMinutes*60 -nowSeconds;
+    const remainTime = Math.floor(difSeconds/3600) ;
+    const remainMinutes = Math.floor((difSeconds - remainTime*3600)/60)
+    console.log(remainTime,"+", remainMinutes)
+    const string = "0 🎟️ come back in " + remainTime + " hours " + remainMinutes + " minutes"
+    return string
   }
   // const fetchData = async () => {
 
@@ -196,13 +206,10 @@ export default function Home() {
         
       });
     } else if (publicKey) {
-      if (playAvail === "Your wallet does not exist in white list")
-        toast(playAvail, {
-          hideProgressBar: false,
-          autoClose: 2000,
-          type: "error",
-          position: toast.POSITION.BOTTOM_RIGHT
-        });
+      if (playAvail === "Your wallet does not exist in white list"){
+        setShowAddWallet(true)
+      }
+        
       // const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
       //   data: {
       //     walletAddress: publicKey.toBase58()
@@ -245,10 +252,8 @@ export default function Home() {
     if (winValue === 1) {
       setShowCongratulationModal(true);
       setShowChallengeModal(false);
-    } else if (winValue === 3) {
-      setShowLooseModal(true);
-      setShowChallengeModal(false);
-    }
+    } 
+
     const response = await axios.post(
       "https://climb-server.onrender.com/api/spots",
       {
@@ -274,14 +279,12 @@ export default function Home() {
           setVideoHidden("hidden");
           setSpinHidden("");
           setRemainTimes(0);
-          toast("There are no more chances today", {
+          toast(remainTime(), {
             hideProgressBar: false,
             autoClose: 2000,
             type: "error",
             position: toast.POSITION.BOTTOM_RIGHT,
           });
-          setErrorContext("There are no more chances today"),
-          setShowErrorModal(true)
         } else {
           if (winPossible === "possible") {
             setRemainTimes(remainTimes - 1);
@@ -622,7 +625,7 @@ export default function Home() {
                 {remainTimes} 🎟️ 
               </div>
               <button
-                className="md:mt-[63px] md:ml-[198px] md:top-0 top-[-100px] md:bg-[#D679BC]/50 bg-[#D679BC] left-4 absolute  h-12 rounded-[12px]"
+                className="md:mt-[63px] md:ml-[198px] md:top-0 top-[-100px] bg-black/80 backdrop-blur-[4px] border border-[#D679BC] left-4 absolute  h-12 rounded-[12px]"
                 onClick={() => {
                   setShowChallengeModal(false),
                     setXsHidden("hidden"),
@@ -654,7 +657,7 @@ export default function Home() {
                       onEnded={() => endSpotRotate()}
                     ></video>
                   </div>
-                  <div className="md:flex flex-col items-center hidden justify-center w-[330px] h-[400px] my-auto rounded-[20px] bg-black/10 backdrop-blur-[5px]">
+                  <div className="md:flex flex-col items-center hidden justify-center w-[330px] h-[350px] my-auto rounded-[20px] bg-black/10 backdrop-blur-[5px]">
                     <div className="inline-flex items-center text-white text-center font-sans font-bold text-[30px] mb-[40px]">
                       {remainTimes} 
                       <div className="text-[30px] ml-4">
@@ -669,9 +672,6 @@ export default function Home() {
                     >
                       Spin
                     </button>
-                    <button className="flex items-center justify-center bg-black text-white border border-white h-[50px] w-[200px] rounded-[6px] mb-[12px] font-bold font-sans text-[25px]">
-                      Buy a turn
-                    </button>
                     <button className="flex items-center border-solid w-[200px] mb-[20px] h-12 bg-[#929292]/40 backdrop-blur-[4px] rounded-full text-[#BABABA] text-xl">
                       <img src="/lockModal.svg" className="ml-[12px]"></img>
                       <img src="/film.svg" className="ml-[20px] mt-[3px]"></img>
@@ -682,15 +682,12 @@ export default function Home() {
               </div>
               <div className="flex flex-col md:hidden items-center justify-center mt-[-500px] w-full">
                 <button
-                  className="flex md:hidden items-center justify-center bg-white h-[50px] w-[200px] rounded-[6px] font-bold font-sans text-[25px]"
+                  className="flex md:hidden items-center justify-center bg-white h-[50px] w-[200px] rounded-[6px] font-bold font-sans mb-6 text-[25px]"
                   onClick={() => {
                     videoHandler();
                   }}
                 >
                   Spin
-                </button>
-                <button className="flex mt-4 items-center justify-center bg-black text-white border border-white h-[50px] w-[200px] rounded-[6px] mb-[12px] font-bold font-sans text-[25px]">
-                  Buy a turn
                 </button>
                 <button className="flex items-center border-solid w-[200px] mb-[20px] h-12 bg-[#929292]/40 backdrop-blur-[4px] rounded-full text-[#BABABA] text-xl">
                   <img src="/lockModal.svg" className="ml-[12px]"></img>
@@ -773,40 +770,43 @@ export default function Home() {
           </div>
         </>
       ) : null}
-      {showLooseModal ? (
+      {showAddWallet ? (
         <>
           <div className="absolute flex justify-center items-center z-3 w-screen h-screen inset-0 bg-black/50   backdrop-blur-[4px]">
-            <div className="flex justify-center items-center overflow-hidden w-full h-full md:w-[580px] md:h-[300px] bg-black/30 md:rounded-[20px]  backdrop-blur-[30px]">
+            <div className="flex justify-center items-center w-[450px] h-[380px] md:w-[550px] md:h-[380px] bg-black/30 rounded-[20px]  backdrop-blur-[30px]">
               <button
                 className="absolute top-[40px] right-[35px] w-[15px] z-[2]"
                 onClick={() => {
-                  setShowLooseModal(false), handleOpenChallenge();
+                  setShowAddWallet(false)
                 }}
               >
                 <img src="/close1.svg"></img>
               </button>
               <div className="flow-root items-center">
-                <div className="md:text-[30px] text-[25px] text-center font-bold text-white mb-[14px]">
-                  Damn, 2 days without a whitelist
+                <div className="md:text-[30px] text-[26px] text-center font-bold text-white mb-[14px]">
+                  Your wallet <br /> is not part of the adventure
                 </div>
-                <div className="flex justify-center items-center w-[580px] mb-[14px]">
-                  <div className="w-[220px] border-b-2"></div>
+                <div className="flex items-center justify-center w-full mb-4">
+                  <button className="inline-flex items-center w-[300px] rounded-[8px] bg-white py-[8px] ">
+                    <div className="bg-[#5662F6] rounded-[8px] px-[10px] py-[12px] ml-[10px]">
+                      <img src='/navDiscord.svg' className="w-[30px]"></img>
+                    </div>
+                    <div className="text-[23px] ml-4 font-bold text-[#D679BC]">Daily quests</div>
+                  </button>
                 </div>
-                <div className="text-[26px] text-center text-white">
-                  That's a long time
+                <div className="flex items-center justify-center w-full">
+                  <button className="inline-flex items-center w-[300px] rounded-[8px] border border-white py-[8px] ">
+                    <div className="bg-white rounded-[8px] px-[8px] py-[8px] ml-[10px]">
+                      <img src='/presents.svg' className="w-[34px]"></img>
+                    </div>
+                    <div className="text-[23px] ml-4 font-bold text-white">Regular giveaway</div>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </>
       ) : null}
-      {/* {showErrorModal ? (
-        <>
-          <div className="absolute flex bottom-[100px] right-[80px] z-50 w-[200px] h-[100px] bg-black/50   backdrop-blur-[4px]">
-            {errorContext}
-          </div>
-        </>
-      ) : null} */}
     </div>
   );
 }
