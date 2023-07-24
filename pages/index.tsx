@@ -66,8 +66,8 @@ export default function Home() {
 
   function getRandom() {
     var num = Math.random();
-    if (num < 0.05) return 1; //probability 0.1
-    else if (num < 0.35) return 2; // probability 0.3
+    if (num < 0.1) return 1; //probability 0.1
+    else if (num < 0.4) return 2; // probability 0.3
     else return 3; //probability 0.6
   }
   function getRandom1() {
@@ -83,7 +83,6 @@ export default function Home() {
     const difSeconds = 24*3600 - nowHours*3600 - nowMinutes*60 -nowSeconds;
     const remainTime = Math.floor(difSeconds/3600) ;
     const remainMinutes = Math.floor((difSeconds - remainTime*3600)/60)
-    console.log(remainTime,"+", remainMinutes)
     const string = "0 🎟️ come back in " + remainTime + " hours " + remainMinutes + " minutes"
     return string
   }
