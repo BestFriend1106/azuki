@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import localFont from "@next/font/local";
+import { css } from 'glamor';
 
 const poppins = localFont({
   src: [
@@ -191,6 +192,8 @@ export default function Home() {
         hideProgressBar: false,
         autoClose: 2000,
         type: "error",
+        position: toast.POSITION.BOTTOM_RIGHT,
+        
       });
     } else if (publicKey) {
       if (playAvail === "Your wallet does not exist in white list")
@@ -198,6 +201,7 @@ export default function Home() {
           hideProgressBar: false,
           autoClose: 2000,
           type: "error",
+          position: toast.POSITION.BOTTOM_RIGHT
         });
       // const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
       //   data: {
@@ -263,6 +267,7 @@ export default function Home() {
           hideProgressBar: false,
           autoClose: 2000,
           type: "error",
+          position: toast.POSITION.BOTTOM_RIGHT
         });
       } else if (publicKey) {
         if (remainTimes === 0) {
@@ -273,6 +278,7 @@ export default function Home() {
             hideProgressBar: false,
             autoClose: 2000,
             type: "error",
+            position: toast.POSITION.BOTTOM_RIGHT,
           });
           setErrorContext("There are no more chances today"),
           setShowErrorModal(true)
@@ -349,19 +355,6 @@ export default function Home() {
   return (
     <div className={`absolute h-screen w-screen ${poppins.variable} font-sans`}>
       <iframe className="z-0 h-screen w-screen absolute" src="1.html"></iframe>
-      {/* <div className="absolute h-25 py-3 z-1  bg-black/50 rounded-lg  backdrop-blur-[2px] inline-flex top-10 left-20 ">
-        <img src ='/avatar.png' className='pl-6 my-4'/>
-        <div className="inline-grid grid-rows-2 gap-4 my-4">
-          <button className="rounded-lg bg-yellow-200 ml-5 mr-5 px-3 text-red-500 hover:bg-yellow-300 font-bold  shadow-amber-700 shadow-lg inline-flex">
-            <img src ='/mologo.png' className='pl-1 my-auto'/>
-            <div className='px-1 my-auto'>3234 $MR</div>
-          </button>
-          <button className="rounded-lg text-yellow-200 ml-5 mr-5 px-3 bg-red-500 hover:bg-red-300 font-bold  shadow-red-700 shadow-lg inline-flex">
-            <img src ='/wallet.png' className='pl-1 my-auto'/>
-            <div className='px-1 m-auto'>Wallet</div>
-          </button>
-        </div>
-      </div> */}
       <div
         className={`flex fixed items-center justify-center w-screen h-screen bg-black/50 backdrop-blur-[4px] ${firstModal} z-10 `}
       >
@@ -619,14 +612,14 @@ export default function Home() {
           </li>
         </ul>
       </div>
-      <ToastContainer />
+      <ToastContainer toastStyle={{ backgroundColor: '#dc5148', color:'white'}}/>
       {/* challenge */}
       {showChallengeModal ? (
         <>
           <div>
             <div className="md:w-screen md:h-screen w-screen h-full md:top-0 top-[150px] bg-black/80 backdrop-blur-[9px] border border-gray md:border-none md:rounded-none rounded-[30px] fixed inset-0 z-3 outline-none focus:outline-none pb-20">
-              <div className="text-white md:hidden mt-[20px] text-center font-sans font-bold text-[20px] mb-[40px]">
-                {remainTimes} spins left
+              <div className="text-white md:hidden mt-[20px] text-center font-sans font-bold text-[30px] mb-[40px]">
+                {remainTimes} 🎟️ 
               </div>
               <button
                 className="md:mt-[63px] md:ml-[198px] md:top-0 top-[-100px] md:bg-[#D679BC]/50 bg-[#D679BC] left-4 absolute  h-12 rounded-[12px]"
@@ -662,8 +655,11 @@ export default function Home() {
                     ></video>
                   </div>
                   <div className="md:flex flex-col items-center hidden justify-center w-[330px] h-[400px] my-auto rounded-[20px] bg-black/10 backdrop-blur-[5px]">
-                    <div className="text-white text-center font-sans font-bold text-[20px] mb-[40px]">
-                      {remainTimes} spins left
+                    <div className="inline-flex items-center text-white text-center font-sans font-bold text-[30px] mb-[40px]">
+                      {remainTimes} 
+                      <div className="text-[30px] ml-4">
+                        🎟️ 
+                      </div>
                     </div>
                     <button
                       className="flex items-center justify-center bg-white h-[50px] w-[200px] rounded-[6px] mb-[12px] font-bold font-sans text-[25px]"
@@ -780,7 +776,7 @@ export default function Home() {
       {showLooseModal ? (
         <>
           <div className="absolute flex justify-center items-center z-3 w-screen h-screen inset-0 bg-black/50   backdrop-blur-[4px]">
-            <div className="flex justify-center items-center w-full h-full md:w-[580px] md:h-[300px] bg-black/30 md:rounded-[20px]  backdrop-blur-[30px]">
+            <div className="flex justify-center items-center overflow-hidden w-full h-full md:w-[580px] md:h-[300px] bg-black/30 md:rounded-[20px]  backdrop-blur-[30px]">
               <button
                 className="absolute top-[40px] right-[35px] w-[15px] z-[2]"
                 onClick={() => {
@@ -790,7 +786,7 @@ export default function Home() {
                 <img src="/close1.svg"></img>
               </button>
               <div className="flow-root items-center">
-                <div className="text-[30px] text-center font-bold text-white mb-[14px]">
+                <div className="md:text-[30px] text-[25px] text-center font-bold text-white mb-[14px]">
                   Damn, 2 days without a whitelist
                 </div>
                 <div className="flex justify-center items-center w-[580px] mb-[14px]">
