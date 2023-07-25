@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import localFont from "@next/font/local";
-import { css } from 'glamor';
+import { css } from "glamor";
 
 const poppins = localFont({
   src: [
@@ -61,8 +61,10 @@ export default function Home() {
   const [gray3, setGray3] = useState<string>("text-white");
   const [connectStatusText, setConnectStatusText] = useState<string>("");
   const [playAvail, setPlayAvail] = useState<string>("");
-  const [desktopConnectButtonIcon, setDesktopConnectButtonIcon] = useState<string>("");
-  const [showAddWallet, setShowAddWallet] = useState<boolean>(false)
+  const [desktopConnectButtonIcon, setDesktopConnectButtonIcon] =
+    useState<string>("");
+  const [showAddWallet, setShowAddWallet] = useState<boolean>(false);
+  const [nickName, setNickName] = useState<string>("");
 
   function getRandom() {
     var num = Math.random();
@@ -70,22 +72,31 @@ export default function Home() {
     else if (num < 0.4) return 2; // probability 0.3
     else return 3; //probability 0.6
   }
+  function handleChangeNickName(event) {
+    setNickName(event.target.value);
+  }
   function getRandom1() {
     var num = Math.random();
     if (num < 0.4) return 2; // probability 0.3
     else return 3; //probability 0.6
   }
   const remainTime = () => {
-    const now = new Date()
+    const now = new Date();
     const nowHours = now.getUTCHours();
     const nowMinutes = now.getUTCMinutes();
     const nowSeconds = now.getUTCSeconds();
-    const difSeconds = 24*3600 - nowHours*3600 - nowMinutes*60 -nowSeconds;
-    const remainTime = Math.floor(difSeconds/3600) ;
-    const remainMinutes = Math.floor((difSeconds - remainTime*3600)/60)
-    const string = "0 🎟️ come back in " + remainTime + " hours " + remainMinutes + " minutes"
-    return string
-  }
+    const difSeconds =
+      24 * 3600 - nowHours * 3600 - nowMinutes * 60 - nowSeconds;
+    const remainTime = Math.floor(difSeconds / 3600);
+    const remainMinutes = Math.floor((difSeconds - remainTime * 3600) / 60);
+    const string =
+      "0 🎟️ come back in " +
+      remainTime +
+      " hours " +
+      remainMinutes +
+      " minutes";
+    return string;
+  };
   // const fetchData = async () => {
 
   //   try {
@@ -202,13 +213,12 @@ export default function Home() {
         autoClose: 2000,
         type: "error",
         position: toast.POSITION.BOTTOM_RIGHT,
-        
       });
     } else if (publicKey) {
-      if (playAvail === "Your wallet does not exist in white list"){
-        setShowAddWallet(true)
+      if (playAvail === "Your wallet does not exist in white list") {
+        setShowAddWallet(true);
       }
-        
+
       // const response = await axios.post('https://climb-server.onrender.com/api/spots/remainTimes', {
       //   data: {
       //     walletAddress: publicKey.toBase58()
@@ -251,17 +261,43 @@ export default function Home() {
     if (winValue === 1) {
       setShowCongratulationModal(true);
       setShowChallengeModal(false);
-    } 
+    } else {
+      const response = await axios.post(
+        "https://climb-server.onrender.com/api/spots",
+        {
+          data: {
+            walletAddress: publicKey.toBase58(),
+            winStatus: winValue,
 
-    const response = await axios.post(
-      "https://climb-server.onrender.com/api/spots",
-      {
-        data: {
-          walletAddress: publicKey.toBase58(),
-          winStatus: winValue,
-        },
-      }
-    );
+          },
+        }
+      );
+    }
+  };
+
+  const sendWin = async () => {
+    if(nickName === ""){
+      toast("Please input nickname", {
+        hideProgressBar: false,
+        autoClose: 2000,
+        type: "error",
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+    }
+    else{
+      setShowCongratulationModal(false); 
+      const response = await axios.post(
+        "https://climb-server.onrender.com/api/spots",
+        {
+          data: {
+            walletAddress: publicKey.toBase58(),
+            winStatus: 1,
+            nickName: nickName
+          },
+        }
+      );
+    }
+      
   };
 
   const videoHandler = async () => {
@@ -271,7 +307,7 @@ export default function Home() {
           hideProgressBar: false,
           autoClose: 2000,
           type: "error",
-          position: toast.POSITION.BOTTOM_RIGHT
+          position: toast.POSITION.BOTTOM_RIGHT,
         });
       } else if (publicKey) {
         if (remainTimes === 0) {
@@ -614,14 +650,16 @@ export default function Home() {
           </li>
         </ul>
       </div>
-      <ToastContainer toastStyle={{ backgroundColor: '#dc5148', color:'white'}}/>
+      <ToastContainer
+        toastStyle={{ backgroundColor: "#dc5148", color: "white" }}
+      />
       {/* challenge */}
       {showChallengeModal ? (
         <>
           <div>
             <div className="md:w-screen md:h-screen w-screen h-full md:top-0 top-[150px] bg-black/80 backdrop-blur-[9px] border border-gray md:border-none md:rounded-none rounded-[30px] fixed inset-0 z-3 outline-none focus:outline-none pb-20">
               <div className="text-white md:hidden mt-[20px] text-center font-sans font-bold text-[30px] mb-[40px]">
-                {remainTimes} 🎟️ 
+                {remainTimes} 🎟️
               </div>
               <button
                 className="md:mt-[63px] md:ml-[198px] md:top-0 top-[-100px] bg-black/80 backdrop-blur-[4px] border border-[#D679BC] left-4 absolute  h-12 rounded-[12px]"
@@ -658,10 +696,8 @@ export default function Home() {
                   </div>
                   <div className="md:flex flex-col items-center hidden justify-center w-[330px] h-[350px] my-auto rounded-[20px] bg-black/10 backdrop-blur-[5px]">
                     <div className="inline-flex items-center text-white text-center font-sans font-bold text-[30px] mb-[40px]">
-                      {remainTimes} 
-                      <div className="text-[30px] ml-4">
-                        🎟️ 
-                      </div>
+                      {remainTimes}
+                      <div className="text-[30px] ml-4">🎟️</div>
                     </div>
                     <button
                       className="flex items-center justify-center bg-white h-[50px] w-[200px] rounded-[6px] mb-[12px] font-bold font-sans text-[25px]"
@@ -745,7 +781,7 @@ export default function Home() {
       {showCongratulationModal ? (
         <>
           <div className="absolute flex justify-center items-center z-3 w-screen h-screen inset-0 bg-black/50   backdrop-blur-[4px]">
-            <div className="flex justify-center items-center w-full h-full md:w-[580px] md:h-[300px] bg-black/30 rounded-[20px]  backdrop-blur-[30px]">
+            <div className="flex justify-center items-center w-full h-full md:w-[580px] md:h-[415px] bg-black/30 rounded-[20px]  backdrop-blur-[30px]">
               <button
                 className="absolute top-[40px] right-[35px] w-[15px] z-[2]"
                 onClick={() => {
@@ -755,14 +791,32 @@ export default function Home() {
                 <img src="/close1.svg"></img>
               </button>
               <div className="flow-root items-center">
-                <div className="text-[40px] text-center font-bold text-[#2CFFA6] mb-[14px]">
+                <div className="text-[35px] text-center font-bold text-[#FF9E2C] mb-[2px]">
                   Congratulations!
                 </div>
-                <div className="flex justify-center items-center w-[580px] mb-[14px]">
-                  <div className="w-[220px] border-b-2"></div>
+                <div className="text-[25px] text-center text-white mb-[20px]">
+                  you are now part of the <br /> advanture
                 </div>
-                <div className="text-[26px] text-center text-white">
-                  a Spot OGs has been <br /> awarded to you
+                <div className="flex justify-center items-center w-[580px] mb-[20px]">
+                  <div className="w-[450px] border-b-2"></div>
+                </div>
+                <div className="flex justify-center items-center w-[580px]">
+                  <div className="w-[250px] border inline-flex items-center border-white/25 rounded-lg">
+                    <img
+                      src="/navDiscord1.svg"
+                      className="w-[25px] my-4 ml-4"
+                    ></img>
+                    <input
+                      placeholder="Your discord nickname"
+                      onChange={handleChangeNickName}
+                      className=" bg-white/0 ml-4 border-white/5 outline-none text-[15px] h-full text-white"
+                    ></input>
+                  </div>
+                </div>
+                <div className="flex justify-center items-center w-[580px] mt-[20px]">
+                  <button className="w-[250px] bg-[#D679BC] text-[20px] font-bold text-white py-3 rounded-lg" onClick={sendWin}>
+                    Enter
+                  </button>
                 </div>
               </div>
             </div>
@@ -776,7 +830,7 @@ export default function Home() {
               <button
                 className="absolute top-[40px] right-[35px] w-[15px] z-[2]"
                 onClick={() => {
-                  setShowAddWallet(false)
+                  setShowAddWallet(false);
                 }}
               >
                 <img src="/close1.svg"></img>
@@ -788,17 +842,21 @@ export default function Home() {
                 <div className="flex items-center justify-center w-full mb-4">
                   <button className="inline-flex items-center w-[300px] rounded-[8px] bg-white py-[8px] ">
                     <div className="bg-[#5662F6] rounded-[8px] px-[10px] py-[12px] ml-[10px]">
-                      <img src='/navDiscord.svg' className="w-[30px]"></img>
+                      <img src="/navDiscord.svg" className="w-[30px]"></img>
                     </div>
-                    <div className="text-[23px] ml-4 font-bold text-[#D679BC]">Daily quests</div>
+                    <div className="text-[23px] ml-4 font-bold text-[#D679BC]">
+                      Daily quests
+                    </div>
                   </button>
                 </div>
                 <div className="flex items-center justify-center w-full">
                   <button className="inline-flex items-center w-[300px] rounded-[8px] border border-white py-[8px] ">
                     <div className="bg-white rounded-[8px] px-[8px] py-[8px] ml-[10px]">
-                      <img src='/presents.svg' className="w-[34px]"></img>
+                      <img src="/presents.svg" className="w-[34px]"></img>
                     </div>
-                    <div className="text-[23px] ml-4 font-bold text-white">Regular giveaway</div>
+                    <div className="text-[23px] ml-4 font-bold text-white">
+                      Regular giveaway
+                    </div>
                   </button>
                 </div>
               </div>
